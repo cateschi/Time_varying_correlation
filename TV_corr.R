@@ -297,7 +297,6 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
       Pttm1[[i+1]] <- Tmatrix%*%Pttm1[[i]]%*%t(Tmatrix-Kg%*%Z)+Q 
       xttm1[,i+1] <- Tmatrix%*%xttm1[,i] + Kg%*%epshatoutofsample
       
-      #The optimization criterion
       if (outofsample) {
         if (i <= d ){
           logl <- logl - nrow(y)/2*log(2*pi)
