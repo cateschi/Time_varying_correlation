@@ -442,7 +442,8 @@ KF_CC_const <- function(par, y, se, opti, outofsample, parP10, nstates, hyper_ta
 
 
 # Estimation of the static parameters of the nonlinear model by indirect inference
-IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofsample, parP10, nstates, d, k, W, restricted, hyper_tan, se, states_noerr, nvar, init_val_CC){ 
+IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofsample, parP10, nstates, d, k, W, 
+                      restricted, hyper_tan, se, states_noerr, nvar, init_val_CC){ 
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
   sigma_lambda <- par[3]
