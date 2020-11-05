@@ -441,7 +441,7 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
 }
 
 
-# Estimation of the static parameters of the model by indirect inference
+# Estimation of the static parameters of the nonlinear model by indirect inference
 IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti,outofsample,parP10,nstates,d,k,W,restricted,hyper_tan,se,states_noerr,nvar,init_val_CC){ 
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
@@ -627,8 +627,7 @@ if (hyper_tan==T){
 
 # Indirect inference #
 
-# state variables that do not have an error term in the transition equation
-states_noerr <- c(1,23:31)
+states_noerr <- c(1,23:31)      # state variables that do not have an error term in the transition equation
 Rsel <- diag(1,43)      # selection matrix of the innovations in the transition equation
 Rsel <- Rsel[,-states_noerr]
 Msel <- diag(1,6)      # selection matrix of the innovations in the observation equation
@@ -638,8 +637,7 @@ sim_h <- 5
 set.seed(2609)
 eps_sim <- t(mvrnorm(n = len_m*sim_h, rep(0,43-length(states_noerr)+2), diag(1,43-length(states_noerr)+2)))  
 
-
-# find initial value
+# find initial value for the variance of gamma
 grid_sigma_gamma <- seq(0.01, 0.15, 0.01)
 obj_grid <- rep(NA, length(grid_sigma_gamma))
 
@@ -648,9 +646,7 @@ for (j in 1:length(grid_sigma_gamma)){
                         sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len_m, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
                         opti=T,outofsample=T,parP10=1000000000000,nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, se=se, states_noerr=states_noerr,nvar=6,init_val_CC=init_val_CC)
 }
-plot(obj_grid, type="l")
 grid_sigma_gamma[which.min(obj_grid)]
-
 
 IndInf_result <- optimr(par=c(par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], log(grid_sigma_gamma[which.min(obj_grid)])), IndInf_CC, 
                         sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len_m, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
@@ -665,7 +661,7 @@ set.seed(1006)
                 
 results_BF <- boot_filter_CC_rcpp(draw_m, IndInf_result$par, y, as.matrix(se), nstates=43, hyper_tan, Rsel, states_noerr, init_gamma = par_biv_const[11])
 
-KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12],y=y[,-len_m],se,opti=F,outofsample=T,parP10=1000000000000,nstates=43,d=30-13,
+KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12], y=y[,-len_m], se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, d=30-13,
                              gamma_draw = results_BF$att_BF[2:len_m], hyper_tan = hyper_tan)
                 
 # estimated time-varying correlation
