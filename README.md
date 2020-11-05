@@ -36,8 +36,8 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``sim_h`` is the number of simulations used in the indirect inference estimation.
 * ``states_noerr`` is a vector of indices for the state variables that do not have an error term in the transition equation.
 * ``VARgamma`` is the variance of the estimated (by maximum likelihood) parameter vector (phi) used in the cubic splines specification of the time-varying correlation.
-* ``y`` is the 6 times ``len`` matrix that contains the observed series.
 * ``W`` is the ``len`` times ``k`` matrix of cubic splines weights (it is the output of the ``Weights`` function).
+* ``y`` is the 6 times ``len`` matrix that contains the observed series.
 
 ### Outputs
 Since also some outputs are common to many functions, below you find another list with all (alphabetically ordered) outputs:
@@ -46,9 +46,9 @@ Since also some outputs are common to many functions, below you find another lis
 * ``Ptt`` is a list of matrices corresponding to the estimated (co)variances of the Kalman filter estimates of the state variables.
 * ``Pttm1`` is a list of matrix corresponding to the predicted (co)variances of the one-step-ahead predictions of the state variables.
 * ``st_for`` is the matrix with the standardised forecast errors.
+* ``W`` is the ``len`` times ``k`` matrix of cubic splines weights.
 * ``xtt`` is the matrix with the Kalman filter estimates of the state variables.
 * `xttm1` is the matrix with the one-step-ahead predictions of the state variables.
-* ``W`` is the ``len`` times ``k`` matrix of cubic splines weights.
 
 
 ## C++ script *TV_corr.cpp*
@@ -67,8 +67,8 @@ Most of the inputs/outputs of the functions included in the C++ script are the s
 * ``init_gamma`` is the value that is used to initialise the Rao-Blackwellised bootstrap filter of gamma (the unbounded version of the correlation parameter).
 * ``init_val`` is the vector of the inital values for the static parameters.
 * ``Rsel`` is selection matrix of the innovations in the transition equation.
-* ``w`` is a vector of unstandardised weights calculated for the resampling step of the Rao-Blackwellised bootstrap filter's algorithm.
 * ``tau_hat`` is the vector with the indirect inference estimates of the static parameters of the nonlinear model.
+* ``w`` is a vector of unstandardised weights calculated for the resampling step of the Rao-Blackwellised bootstrap filter's algorithm.
 
 Notice that in the ``KF_t_rcpp`` function, the inputs ``se``, ``xttm1`` and ``y`` are vectors instead of matrices, and ``Pttm1`` is a matrix instead of a list.
 
