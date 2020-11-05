@@ -15,5 +15,12 @@ This R script should be run in order to replicate the analyses, since it calls t
 
 ## C++ script *TV_corr.cpp*
 
+This C++ script contains a first set of functions that are needed in order to perform some mathematical operations. The functions that are related to the estimation of the time-varying correlation are:
+* *stratifiedResampling_rcpp*: it performs startified resampling.
+* *KF_CC_splines_rcpp*: it performs the Kalman filter estimation (and log-likelihood evaluation) of the cubic splines model.
+* *ucminf_rcpp_splines*: it maximises the the log-likelihood function evaluated in the *KF_CC_splines_rcpp* function.
+* *KF_t_rcpp*: it computes the prediction step of the Kalman filter.
+* *boot_filter_CC_rcpp*: it performs the Rao-blackwellised bootstrap filter estimation of the state vector of the nonlinear model.
+
 
 In case of queries you can contact the corresponding author at c[dot]schiavoni[at]maastrichtuniversity[dot]nl.
