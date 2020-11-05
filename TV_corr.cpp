@@ -6,7 +6,7 @@ using namespace arma;
 // Functions
 
 
-// Create block-diagonal matrix
+// Create a block-diagonal matrix
 mat blockDiag(const mat& X, const mat& Y){
   mat A = zeros(X.n_rows, Y.n_cols);
   mat B = zeros(Y.n_rows, X.n_cols);
@@ -15,7 +15,7 @@ mat blockDiag(const mat& X, const mat& Y){
 } 
 
 
-// Inverse of matrix based on SVD decomposition
+// Inverse of a matrix based on the SVD decomposition
 mat invSVD(const mat& X) {
   mat U, V;
   vec S;
@@ -32,6 +32,7 @@ double Clink(double& x){
 }
 
 
+// Append a scalar to a vector
 vec vecscal(const vec& x, double& y){
   vec z(x.size()+1);
   z.subvec(0,x.size()-1) = x;
@@ -40,14 +41,14 @@ vec vecscal(const vec& x, double& y){
 }
 
 
-// Convert list into matrix
+// Convert a list into a matrix
 mat list2mat(Rcpp::List& y, int& j){
   mat x = y[j];
   return x;
 }
 
 
-// Convert list into vector
+// Convert a list into a vector
 vec list2vec(Rcpp::List& y, int& j){
   vec x = y[j];
   return x;
@@ -72,6 +73,7 @@ vec stratifiedResampling_rcpp(vec& w, const int& M){
 }
 
 
+// Extract the columns of a matrix according to a vector of column-indeces, and store them into a new matrix
 mat repcol(const mat& X, const vec& ind) {
   mat Xsub = X;
   int l = ind.size();
@@ -82,6 +84,7 @@ mat repcol(const mat& X, const vec& ind) {
 }
 
 
+// Extract the elements of a list according to a vector of element-indeces, and store them into a new list
 Rcpp::List replist(const Rcpp::List& X, const vec& ind) {
   Rcpp::List Xsub = X;
   int l = ind.size();
