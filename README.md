@@ -17,8 +17,9 @@ The R script contains the following functions:
 * ``IndInf_CC``: it performs the estimation of the static parameters of the nonlinear model by indirect inference.
 
 ### Inputs
-Some inputs are common to many functions. Below you can find the list of all inpits:
-* 
+Some inputs are common to many functions. Below you can find the list of all inputs:
+* ``len``: the sample size.
+* ``knots``:
 
 ## C++ script *TV_corr.cpp*
 
