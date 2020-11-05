@@ -84,7 +84,7 @@ link <- function(x){
 
 
 # Kalman filter estimation with known values for the time-varying correlation
-KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,d,gamma_draw){
+KF_CC_known_corr <- function(par, y, se, opti, outofsample, parP10, nstates, hyper_tan, d, gamma_draw){
   len <- length(y[1,])
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
@@ -195,13 +195,13 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
     return(-logl)
   }
   else {
-    return(list(logl=-logl, xtt=xtt,xttm1=xttm1,Pttm1=Pttm1,Ptt=Ptt,st_for=st_for))
+    return(list(logl=-logl, xtt=xtt, xttm1=xttm1, Pttm1=Pttm1, Ptt=Ptt, st_for=st_for))
   }
 }
 
 
 # Kalman filter estimation of the cubic splines model
-KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricted,hyper_tan,d){
+KF_CC_splines <- function(par, y, se, opti, outofsample, parP10, nstates, k, W, restricted, hyper_tan, d){
   len <- length(y[1,])
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
@@ -322,13 +322,13 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
     return(-logl)
   }
   else {
-    return(list(logl=-logl, xtt=xtt,xttm1=xttm1,Pttm1=Pttm1,Ptt=Ptt,st_for=st_for))
+    return(list(logl=-logl, xtt=xtt, xttm1=xttm1, Pttm1=Pttm1, Ptt=Ptt, st_for=st_for))
   }
 }
 
 
 # Kalman filter estimation of the model with time-constant correlation
-KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
+KF_CC_const <- function(par, y, se, opti, outofsample, parP10, nstates, hyper_tan){
   len <- length(y[1,])
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
@@ -436,13 +436,13 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
     return(-logl)
   }
   else {
-    return(list(logl=-logl, xtt=xtt,xttm1=xttm1,Pttm1=Pttm1,Ptt=Ptt,st_for=st_for))
+    return(list(logl=-logl, xtt=xtt, xttm1=xttm1, Pttm1=Pttm1, Ptt=Ptt, st_for=st_for))
   }
 }
 
 
 # Estimation of the static parameters of the nonlinear model by indirect inference
-IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti,outofsample,parP10,nstates,d,k,W,restricted,hyper_tan,se,states_noerr,nvar,init_val_CC){ 
+IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofsample, parP10, nstates, d, k, W, restricted, hyper_tan, se, states_noerr, nvar, init_val_CC){ 
   sigma_Ry <- par[1]
   sigma_omegay <- par[2]
   sigma_lambda <- par[3]
