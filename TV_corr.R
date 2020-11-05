@@ -526,8 +526,8 @@ IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofs
     
     init_valII <- c(beta_hat,rep(0,length(knots)))
     
-    objoptII <- ucminf_rcpp_splines(init_valII,y=y,se=as.matrix(se),opti=opti,outofsample=outofsample,
-                                    parP10=parP10,nstates=nstates, d=d,k=k, W=W, hyper_tan=hyper_tan, restricted=restricted, 
+    objoptII <- ucminf_rcpp_splines(init_valII, y=y, se=as.matrix(se), opti=opti, outofsample=outofsample,
+                                    parP10=parP10, nstates=nstates, d=d, k=k, W=W, hyper_tan=hyper_tan, restricted=restricted, 
                                     control=list(gradstep = c(1e-2, 1e-3)))
     
     betatilde[h,] <- c(objoptII$par[-c((length(objoptII$par)-length(knots)+1):length(objoptII$par))], var(objoptII$par[13:length(objoptII$par)]))
