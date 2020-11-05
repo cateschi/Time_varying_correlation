@@ -18,9 +18,9 @@ library(optimr)
 
 ## Functions ##
 
+
 # Create the cubic splines weights
-Weights <- function(len, knots){
-  
+Weights <- function(len, knots){  
   n <- len   
   time <- c(1:n)      
   k <- length(knots)     
@@ -83,13 +83,13 @@ Weights <- function(len, knots){
 
 
 # Link function that bounds its argument between -1 and 1
-
 link <- function(x){
   y <- x/sqrt(1+x^2)
   return(y)
 }
 
 
+# Kalman filter estimation with known values for the time-varying correlation
 KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,d,gamma_draw){
   len <- length(y[1,])
   sigma_Ry <- par[1]
@@ -110,7 +110,6 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
   xttm1[,1] <- x10
   H <- adiag(diag(0,5,5), exp(2*par[11]))
   
-  #Bulid T:
   Tymu <- matrix(c(1,1,0,1),2,2, byrow=T)
   C <- array(0,dim=c(2,2,5))
   for (l in 1:5){
@@ -131,13 +130,10 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
   R <- diag(1,nstates,nstates)
   D <- adiag(0, exp(sigma_Ry), exp(sigma_omegay)*diag(11), exp(sigma_lambda)*diag(4), sd_nu, diag(0,8,8), 0, exp(sigma_Rx), exp(sigma_omegax)*diag(11))
   
-  #initialization of loglikelihood
   logl <- 0
   
-  #Start of KF recursions
   for (i in 1:len){ 
     
-    #Bulid Z:
     Zy <- c(1,0)
     Zy <- rep(Zy,6)
     Zy <- c(Zy,1)
@@ -154,7 +150,6 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
     
     epshatoutofsample <- y[,i] - Z%*%xttm1[,i]
     Fmatrix <- Z%*%Pttm1[[i]]%*%t(Z) + H
-    #Fmatrix[1,1] <- ifelse(!is.na(epshatoutofsample[1,]), Fmatrix[1,1], parP10[1])
     if ((NaN %in% Fmatrix)==T){
       logl<- -P10[1]
     } else {
@@ -164,10 +159,10 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
         Bmatrix <- chol(Fmatrix_inv)
         st_for[,i] <- Bmatrix%*%epshatoutofsample
       }
-      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv #kalman gain
-      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample #compute x_{t|t}
-      epshatinsample <- y[,i]-Z%*%xtt[,i] #in-sample forecast error (after y_t has been observed)
-      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] #compute P_{t|t}
+      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv 
+      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample 
+      epshatinsample <- y[,i]-Z%*%xtt[,i] 
+      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] 
       
       if (hyper_tan==T){
         R[32,2] <- tanh(gamma_draw[i]) 
@@ -181,11 +176,10 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
       Pttm1[[i+1]] <- Tmatrix%*%Pttm1[[i]]%*%t(Tmatrix-Kg%*%Z)+Q 
       xttm1[,i+1] <- Tmatrix%*%xttm1[,i] + Kg%*%epshatoutofsample
       
-      #The optimization criterion
       if (outofsample) {
         if (i <= d ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > d ){ # diffuse log likelihood
+        } else if (i > d ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatoutofsample)%*%Fmatrix_inv%*%epshatoutofsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
@@ -194,7 +188,7 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
       } else {
         if (i <= d ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > d ){ # diffuse log likelihood
+        } else if (i > d ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatinsample)%*%Fmatrix_inv%*%epshatinsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
@@ -212,6 +206,7 @@ KF_CC_known_corr <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan,
 }
 
 
+# Kalman filter estimation of the cubic splines model
 KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricted,hyper_tan,d){
   len <- length(y[1,])
   sigma_Ry <- par[1]
@@ -232,7 +227,6 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
   xttm1[,1] <- x10
   H <- adiag(diag(0,5,5), exp(2*par[11]))
   
-  #Bulid T:
   Tymu <- matrix(c(1,1,0,1),2,2, byrow=T)
   C <- array(0,dim=c(2,2,5))
   for (l in 1:5){
@@ -253,13 +247,10 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
   R <- diag(1,nstates,nstates)
   D <- adiag(0, exp(sigma_Ry), exp(sigma_omegay)*diag(11), exp(sigma_lambda)*diag(4), sd_nu, diag(0,8,8), 0, exp(sigma_Rx), exp(sigma_omegax)*diag(11))
   
-  #initialization of loglikelihood
   logl <- 0
   
-  #Start of KF recursions
   for (i in 1:len){ 
     
-    #Bulid Z:
     Zy <- c(1,0)
     Zy <- rep(Zy,6)
     Zy <- c(Zy,1)
@@ -276,7 +267,6 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
     
     epshatoutofsample <- y[,i] - Z%*%xttm1[,i]
     Fmatrix <- Z%*%Pttm1[[i]]%*%t(Z) + H
-    #Fmatrix[1,1] <- ifelse(!is.na(epshatoutofsample[1,]), Fmatrix[1,1], parP10[1])
     if ((NaN %in% Fmatrix)==T){
       logl<- -P10[1]
     } else {
@@ -286,25 +276,25 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
         Bmatrix <- chol(Fmatrix_inv)
         st_for[,i] <- Bmatrix%*%epshatoutofsample
       }
-      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv #kalman gain
-      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample #compute x_{t|t}
-      epshatinsample <- y[,i]-Z%*%xtt[,i] #in-sample forecast error (after y_t has been observed)
-      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] #compute P_{t|t}
+      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv 
+      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample 
+      epshatinsample <- y[,i]-Z%*%xtt[,i] 
+      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] 
       
       if (hyper_tan==T){  
         if (restricted==T){
-          R[32,2] <- tanh(par[length(par)-k+1])      # time constant correlation
+          R[32,2] <- tanh(par[length(par)-k+1])      
           R[2,32] <- tanh(par[length(par)-k+1]) 
         } else {
-          R[32,2] <- tanh(W[i,1:k]%*%par[(length(par)-k+1):length(par)])      # time varying correlation
+          R[32,2] <- tanh(W[i,1:k]%*%par[(length(par)-k+1):length(par)])      
           R[2,32] <- tanh(W[i,1:k]%*%par[(length(par)-k+1):length(par)]) 
         }
       } else {
         if (restricted==T){
-          R[32,2] <- link(par[length(par)-k+1])      # time constant correlation
+          R[32,2] <- link(par[length(par)-k+1])      
           R[2,32] <- link(par[length(par)-k+1]) 
         } else {
-          R[32,2] <- link(W[i,1:k]%*%par[(length(par)-k+1):length(par)])      # time varying correlation
+          R[32,2] <- link(W[i,1:k]%*%par[(length(par)-k+1):length(par)])      
           R[2,32] <- link(W[i,1:k]%*%par[(length(par)-k+1):length(par)]) 
         }
       }
@@ -317,7 +307,7 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
       if (outofsample) {
         if (i <= d ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > d ){ # diffuse log likelihood
+        } else if (i > d ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatoutofsample)%*%Fmatrix_inv%*%epshatoutofsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
@@ -326,7 +316,7 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
       } else {
         if (i <= d ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > d ){ # diffuse log likelihood
+        } else if (i > d ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatinsample)%*%Fmatrix_inv%*%epshatinsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
@@ -344,6 +334,7 @@ KF_CC_splines <- function(par,y,se,opti,outofsample,parP10,nstates,k,W,restricte
 }
 
 
+# Kalman filter estimation of the model with time-constant correlation
 KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
   len <- length(y[1,])
   sigma_Ry <- par[1]
@@ -374,7 +365,6 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
   Q <- D%*%R%*%D
   H <- adiag(diag(0,5,5), exp(2*par[12]))
   
-  #Bulid T:
   Tymu <- matrix(c(1,1,0,1),2,2, byrow=T)
   C <- array(0,dim=c(2,2,5))
   for (l in 1:5){
@@ -392,13 +382,10 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
   Tx <- adiag(Tymu, Tyomega)
   Tmatrix <- adiag(Ty, Tx)
   
-  #initialization of loglikelihood
   logl <- 0
   
-  #Start of KF recursions
   for (i in 1:len){ 
-    
-    #Bulid Z:
+
     Zy <- c(1,0)
     Zy <- rep(Zy,6)
     Zy <- c(Zy,1)
@@ -415,7 +402,6 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
     
     epshatoutofsample <- y[,i] - Z%*%xttm1[,i]
     Fmatrix <- Z%*%Pttm1[[i]]%*%t(Z) + H
-    #Fmatrix[1,1] <- ifelse(!is.na(epshatoutofsample[1,]), Fmatrix[1,1], parP10[1])
     if ((NaN %in% Fmatrix)==T){
       logl<- -P10[1]
     } else {
@@ -425,18 +411,17 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
         Bmatrix <- chol(Fmatrix_inv)
         st_for[,i] <- Bmatrix%*%epshatoutofsample
       }
-      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv #kalman gain
-      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample #compute x_{t|t}
-      epshatinsample <- y[,i]-Z%*%xtt[,i] #in-sample forecast error (after y_t has been observed)
-      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] #compute P_{t|t}
+      Kg <- Tmatrix%*%Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv 
+      xtt[,i] <- xttm1[,i]+Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%epshatoutofsample 
+      epshatinsample <- y[,i]-Z%*%xtt[,i] 
+      Ptt[[i]] <- Pttm1[[i]]-Pttm1[[i]]%*%t(Z)%*%Fmatrix_inv%*%Z%*%Pttm1[[i]] 
       Pttm1[[i+1]] <- Tmatrix%*%Pttm1[[i]]%*%t(Tmatrix-Kg%*%Z)+Q 
       xttm1[,i+1] <- Tmatrix%*%xttm1[,i] + Kg%*%epshatoutofsample
       
-      #The optimization criterion
       if (outofsample) {
         if (i <= (30-13) ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > (30-13) ){ # diffuse log likelihood
+        } else if (i > (30-13) ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatoutofsample)%*%Fmatrix_inv%*%epshatoutofsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
@@ -445,7 +430,7 @@ KF_CC_const <- function(par,y,se,opti,outofsample,parP10,nstates,hyper_tan){
       } else {
         if (i <= (30-13) ){
           logl <- logl - nrow(y)/2*log(2*pi)
-        } else if (i > (30-13) ){ # diffuse log likelihood
+        } else if (i > (30-13) ){ 
           logl <- logl - nrow(y)/2*log(2*pi) - 1/2*log(det(Fmatrix)) - 1/2*t(epshatinsample)%*%Fmatrix_inv%*%epshatinsample
           if ((NaN %in% logl)==T){
             logl<- -P10[1]
