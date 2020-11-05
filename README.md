@@ -17,9 +17,20 @@ The R script contains the following functions:
 * ``IndInf_CC`` performs the estimation of the static parameters of the nonlinear model by indirect inference.
 
 ### Inputs
-Some inputs are common to many functions. Below you can find the list of all inputs:
+Some inputs are common to many functions. Below you can find the list (in alphabetical order) of all inputs:
+* ``d`` is the number of state variables for which a diffuse initialisation is used.
+* ``gamma_draw``
+* ``hyper_tan``: if ``TRUE``, it uses the hyperbolic function to bound the correlation parameter, otherwise the ``link`` function.
+* ``knots`` is the vector of the observations corresponding to the knots.
 * ``len`` is the sample size.
-* ``knots``
+* ``nstates`` is the number of state variables in the model.
+* ``opti``: if ``TRUE``, it optimizes the function.
+* ``outofsample``: if ``TRUE``, it computes the log-likelihood based on the out-of-sample forecast errors.
+* ``par`` is the vector of the inital values for the static parameters.
+* ``parP10`` is a large number used for the diffuse initialisation.
+* ``se`` is the ``len`` times 5 matrix of the standard errors of the GREG estimates.
+* ``y`` is the 6 times ``len`` matrix that contains the observed series.
+
 
 ## C++ script *TV_corr.cpp*
 
