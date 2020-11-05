@@ -21,7 +21,7 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``beta_hat`` is the vector with the maximum likelihood estimates of the static parameters of the cubic splines model, except for the estimated parameter vector (phi) used in the cubic splines specification of the time-varying correlation.
 * ``d`` is the number of state variables for which a diffuse initialisation is used.
 * ``eps_sim`` is a matrix with ``nstates-length(states_noerr)+2`` rows and ``len`` times ``sim_h`` columns, and it contains the generated innovations used in the indirect inference estimation.
-* ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma)
+* ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma).
 * ``hyper_tan``: if ``TRUE``, it uses the hyperbolic function to bound the correlation parameter, otherwise the ``link`` function.
 * ``k`` is the number of knots.
 * ``knots`` is the vector of the observations corresponding to the knots.
@@ -72,6 +72,12 @@ Most of the inputs/outputs of the functions included in the C++ script are the s
 
 Notice that in the ``KF_t_rcpp`` function, ``se``, ``xttm1`` and ``y`` are vectors instead of matrices, and ``Pttm1`` is a matrix instead of a list.
 
+### Outputs
+* ``att_BF`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma).
+* ``CV`` is the vector containing the values for the coefficient of variation, calculated in the Rao-Blackwellised bootstrap filter's algorithm.
+* ``ESS`` is the vector containing the values for the effective sample size, calculated in the Rao-Blackwellised bootstrap filter's algorithm.
+* ``Ptt_BF`` is the vector containing the estimated variances of the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma).
+* ``resample_set`` is a vector of indices for the particles that have been resampled.
 
 
 In case of queries you can contact the corresponding author at c[dot]schiavoni[at]maastrichtuniversity[dot]nl.
