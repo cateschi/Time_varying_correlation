@@ -1,11 +1,5 @@
-rm(list=ls())     # Clean memory
-graphics.off()    # Close graphs
-cat("\014")       # Clear Console
+## Packages needed to run the script ##
 
-
-
-#### Packages ####
-library(readxl)
 library(ucminf)
 library(magic)      # to create block-diagonal matrices
 library(numDeriv)      # to compute the Hessian and the gradient numerically
@@ -14,7 +8,6 @@ library(cowplot)      # for plots
 library(matrixcalc)      # for vec operator
 library(MASS)      # to draw from a multivariate normal distribution
 library(matrixStats)      # to get quantiles out of matrix
-library(openxlsx)
 library(Rcpp)
 library(RcppArmadillo)
 library(zoo)
@@ -23,16 +16,16 @@ library(optimr)
 
 
 
-#### Functions ####
+## Functions ##
 
-
+# Function that creates the cubic splines weights
 Weights <- function(len, knots){
-  n <- len    # sample size
-  time <- c(1:n)      # time (a deterministic trend) is the regressor
   
-  k <- length(knots)    # number of knots
+  n <- len   
+  time <- c(1:n)      
+  k <- length(knots)     
+  h <- diff(knots)      
   
-  h <- diff(knots)      # interval lengths
   lambda <- rep(NA,(k-2))
   for (j in 1:(k-2)){
     lambda [j] <- h[j+1]/(h[j]+h[j+1])
@@ -41,7 +34,7 @@ Weights <- function(len, knots){
   pi.zero <- 0
   pi.k <- 0
   
-  Lambda <- matrix(NA, k, k)     # Lambda matrix
+  Lambda <- matrix(NA, k, k)     
   for (j in 1:k){
     if (j == 1){
       Lambda[j,] <- c(c(2, -2*pi.zero), rep(0,(k-2)))
@@ -52,7 +45,7 @@ Weights <- function(len, knots){
     }
   }
   
-  Theta <- matrix(NA, k, k)     # Theta matrix
+  Theta <- matrix(NA, k, k)     
   for (j in 1:k){
     if (j == 1){
       Theta[j,] <- rep(0,k)
@@ -63,9 +56,9 @@ Weights <- function(len, knots){
     }
   }
   
-  P <- matrix(0, n, k)     # P matrix
-  for (i in 1:n){      # loop over the observations
-    for (j in 2:k){     # loop over the knots
+  P <- matrix(0, n, k)    
+  for (i in 1:n){      
+    for (j in 2:k){     
       if (i >= (knots[j-1]) && i <= knots[j]){
         P[i,(j-1)] <- (knots[j] - i)/(6*h[j-1])*((knots[j] - i)^2 - h[j-1]^2)
         P[i,j] <- (i - knots[j-1])/(6*h[j-1])*((i - knots[j-1])^2 - h[j-1]^2)
@@ -73,9 +66,9 @@ Weights <- function(len, knots){
     }
   }
   
-  Q <- matrix(0, n, k)     # Q matrix
-  for (i in 1:n){      # loop over the observations
-    for (j in 2:k){     # loop over the knots
+  Q <- matrix(0, n, k)     
+  for (i in 1:n){      
+    for (j in 2:k){     
       if (i >= (knots[j-1]) && i <= knots[j]){
         Q[i,(j-1)] <- (knots[j] - i)/h[j-1]
         Q[i,j] <- (i - knots[j-1])/h[j-1]
@@ -83,17 +76,7 @@ Weights <- function(len, knots){
     }
   }
   
-  W <- P%*%solve(Lambda)%*%Theta + Q      # W matrix of weights
-  
-  #qr(W)$rank == k      # Unit test: the rank of W should be equal to the number of knots
-  
-  # for (j in 1:k){
-  #   if (j == 1){
-  #     plot(W[,1], type="l", col=1)
-  #   } else {
-  #     lines(W[,j], col=j)
-  #   }
-  # }
+  W <- P%*%solve(Lambda)%*%Theta + Q      
   
   return(list(W=W, P=P, Q=Q, Lambda=Lambda, Theta=Theta))
 }
