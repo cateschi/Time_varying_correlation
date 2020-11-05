@@ -19,7 +19,7 @@ The R script contains the following functions:
 ### Inputs
 Some inputs are common to many functions. Below you can find the list (in alphabetical order) of all inputs:
 * ``d`` is the number of state variables for which a diffuse initialisation is used.
-* ``gamma_draw`` is a vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded correlation parameter ($$\gamma_t$$)
+* ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded correlation parameter (gamma)
 * ``hyper_tan``: if ``TRUE``, it uses the hyperbolic function to bound the correlation parameter, otherwise the ``link`` function.
 * ``knots`` is the vector of the observations corresponding to the knots.
 * ``len`` is the sample size.
