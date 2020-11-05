@@ -566,7 +566,7 @@ objopt_CC_const <- ucminf(par=init_val_CC, KF_CC_const, y=y, se=se, opti=T, outo
                 
 par_biv_const <- objopt_CC_const$par
 
-obj_const <- KF_CC_const(par_biv_const,y=y,se=se,opti=F,outofsample=T,parP10=1000000000000,nstates=43, hyper_tan=hyper_tan)
+obj_const <- KF_CC_const(par_biv_const, y=y, se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, hyper_tan=hyper_tan)
                 
 # estimated time-constant correlation
 gamma_hat_const <- par_biv_const[11]
@@ -585,28 +585,28 @@ BIC <- rep(NA,2)
 for (choice_k in 1:2){
   
   if (choice_k==1){ 
-    knots <- as.numeric(quantile(c(1:len_m), probs = seq(0, 1, 0.25)))
+    knots <- as.numeric(quantile(c(1:len), probs = seq(0, 1, 0.25)))
   } else {
-    knots <- as.numeric(quantile(c(1:len_m), probs = seq(0, 1, 1/7)))
+    knots <- as.numeric(quantile(c(1:len), probs = seq(0, 1, 1/7)))
   }
   
-  W <- Weights(len=len_m,knots=knots)$W
+  W <- Weights(len=len,knots=knots)$W
   
   objopt_CC_splines <- ucminf_rcpp_splines(init_val=c(init_val_CC[-11], rep(0,length(knots))), y=y, se=as.matrix(se), opti=T, outofsample=T,
                                            parP10=1000000000000, nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, 
                                            control=list(gradstep = c(1e-2, 1e-3)))  
   
-  AIC[choice_k] <- 1/len_m*(2*objopt_CC_splines$value + 2*(30-13 + length(c(init_val_CC[-11],rep(0,length(knots))))))
-  BIC[choice_k] <- 1/len_m*(2*objopt_CC_splines$value + log(len_m)*(30-13 + length(c(init_val_CC[-11],rep(0,length(knots))))))
+  AIC[choice_k] <- 1/len*(2*objopt_CC_splines$value + 2*(30-13 + length(c(init_val_CC[-11],rep(0,length(knots))))))
+  BIC[choice_k] <- 1/len*(2*objopt_CC_splines$value + log(len)*(30-13 + length(c(init_val_CC[-11],rep(0,length(knots))))))
   
 }
 
 if (which.min(BIC) == 1){
-  knots <- as.numeric(quantile(c(1:len_m), probs = seq(0, 1, 0.25)))
+  knots <- as.numeric(quantile(c(1:len), probs = seq(0, 1, 0.25)))
   
-  W <- Weights(len=len_m,knots=knots)$W
+  W <- Weights(len=len,knots=knots)$W
   
-  objopt_CC_splines <- ucminf_rcpp_splines(init_val=c(init_val_CC[-11],rep(0,length(knots))), y=y, se=as.matrix(se), opti=T, outofsample=T,
+  objopt_CC_splines <- ucminf_rcpp_splines(init_val=c(init_val_CC[-11], rep(0,length(knots))), y=y, se=as.matrix(se), opti=T, outofsample=T,
                                            parP10=1000000000000, nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, 
                                            control=list(gradstep = c(1e-2, 1e-3)))
 }
@@ -635,7 +635,7 @@ Msel <- Msel[,-c(1:5)]
 
 sim_h <- 5
 set.seed(2609)
-eps_sim <- t(mvrnorm(n = len_m*sim_h, rep(0,43-length(states_noerr)+2), diag(1,43-length(states_noerr)+2)))  
+eps_sim <- t(mvrnorm(n = len*sim_h, rep(0,43-length(states_noerr)+2), diag(1,43-length(states_noerr)+2)))  
 
 # find initial value for the variance of gamma
 grid_sigma_gamma <- seq(0.01, 0.15, 0.01)
@@ -643,14 +643,14 @@ obj_grid <- rep(NA, length(grid_sigma_gamma))
 
 for (j in 1:length(grid_sigma_gamma)){
   obj_grid[j] <- IndInf_CC(par=c(par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))],log(grid_sigma_gamma[j])), 
-                        sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len_m, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
-                        opti=T,outofsample=T,parP10=1000000000000,nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, se=se, states_noerr=states_noerr,nvar=6,init_val_CC=init_val_CC)
+                        sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
+                        opti=T,outofsample=T,parP10=1000000000000,nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, se=se, states_noerr=states_noerr, nvar=6, init_val_CC=init_val_CC)
 }
 grid_sigma_gamma[which.min(obj_grid)]
 
 IndInf_result <- optimr(par=c(par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], log(grid_sigma_gamma[which.min(obj_grid)])), IndInf_CC, 
-                        sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len_m, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
-                        opti=T, outofsample=T, parP10=1000000000000, nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, se=se, states_noerr=states_noerr,nvar=6,init_val_CC=init_val_CC,
+                        sim_h=sim_h, beta_hat=par_biv_splines[-c((length(par_biv_splines)-length(knots)+1):length(par_biv_splines))], len=len, eps_sim=eps_sim, VARgamma = var(par_biv_splines[13:length(par_biv_splines)]),
+                        opti=T, outofsample=T, parP10=1000000000000, nstates=43, d=30-13, k=length(knots), W=W, hyper_tan=hyper_tan, restricted=F, se=se, states_noerr=states_noerr, nvar=6, init_val_CC=init_val_CC,
                         control=list(trace=T), method="CG")
 
 
@@ -661,8 +661,8 @@ set.seed(1006)
                 
 results_BF <- boot_filter_CC_rcpp(draw_m, IndInf_result$par, y, as.matrix(se), nstates=43, hyper_tan, Rsel, states_noerr, init_gamma = par_biv_const[11])
 
-KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12], y=y[,-len_m], se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, d=30-13,
-                             gamma_draw = results_BF$att_BF[2:len_m], hyper_tan = hyper_tan)
+KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12], y=y[,-len], se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, d=30-13,
+                             gamma_draw = results_BF$att_BF[2:len], hyper_tan = hyper_tan)
                 
 # estimated time-varying correlation
 if (hyper_tan == T){
