@@ -1,17 +1,11 @@
 ## Packages needed to run the script ##
 
 library(ucminf)
-library(magic)      # to create block-diagonal matrices
-library(numDeriv)      # to compute the Hessian and the gradient numerically
-library(ggplot2)      # for plots
-library(cowplot)      # for plots
-library(matrixcalc)      # for vec operator
-library(MASS)      # to draw from a multivariate normal distribution
-library(matrixStats)      # to get quantiles out of matrix
+library(magic)     
+library(MASS)           
 library(Rcpp)
 library(RcppArmadillo)
 library(zoo)
-library(PerformanceAnalytics)
 library(optimr)
 
 
