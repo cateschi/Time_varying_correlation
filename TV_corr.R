@@ -654,7 +654,7 @@ IndInf_result <- optimr(par=c(par_biv_splines[-c((length(par_biv_splines)-length
                         control=list(trace=T), method="CG")
 
 
-# Bootstrap filter #
+# Rao-Blackwellised bootstrap filter #
 
 draw_m <- 5000
 set.seed(1006)
