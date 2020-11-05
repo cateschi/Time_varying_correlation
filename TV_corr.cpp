@@ -41,14 +41,14 @@ vec vecscal(const vec& x, double& y){
 }
 
 
-// Convert a list into a matrix
+// Convert the element of a list into a matrix
 mat list2mat(Rcpp::List& y, int& j){
   mat x = y[j];
   return x;
 }
 
 
-// Convert a list into a vector
+// Convert the element of a list into a vector
 vec list2vec(Rcpp::List& y, int& j){
   vec x = y[j];
   return x;
