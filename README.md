@@ -41,14 +41,14 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 
 ### Outputs
 since also some outputs are common to many functions, below you find again the list (in alphabetical order) of all outputs:
-* ``W`` is the ``len`` times ``k`` matrix of cubic splines weights.
 * ``logl`` is the value of the maximised log-likelihood.
-* ``opt.fun`` is the minimised objective function used in the indirect inference estimation.
+* ``opt.fun`` is the value of the minimised objective function used in the indirect inference estimation.
 * ``Ptt`` is the matrix with the estimated (co)variances of the Kalman filter estimates of the state variables.
 * ``Pttm1`` is the matrix with the predicted (co)variances of the one-step-ahead predictions of the state variables.
 * ``st_for`` is the matrix with the standardised forecast errors.
 * ``xtt`` is the matrix with the Kalman filter estimates of the state variables.
 * `xttm1` is the matrix with the one-step-ahead predictions of the state variables.
+* ``W`` is the ``len`` times ``k`` matrix of cubic splines weights.
 
 
 ## C++ script *TV_corr.cpp*
