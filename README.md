@@ -18,9 +18,9 @@ The R script contains the following functions:
 
 ### Inputs
 Some inputs are common to many functions. Below you can find the list (in alphabetical order) of all inputs:
-* ``beta_hat`` is the vector with the estimates of the static parameters of the cubic splines model, except for the estimates of the parameter vector (phi) used in the specification of the time-varying correlation.
+* ``beta_hat`` is the vector with the estimates of the static parameters of the cubic splines model, except for the estimated parameter vector (phi) used in the cubic splines specification of the time-varying correlation.
 * ``d`` is the number of state variables for which a diffuse initialisation is used.
-* ``eps_sim`` is a matrix with ``len`` times ``sim_h`` columns, and it contains the generated innovations used in the indirect inference estimation.
+* ``eps_sim`` is a matrix with ``nstates-length(states_noerr)+2`` rows and ``len`` times ``sim_h`` columns, and it contains the generated innovations used in the indirect inference estimation.
 * ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded correlation parameter (gamma)
 * ``hyper_tan``: if ``TRUE``, it uses the hyperbolic function to bound the correlation parameter, otherwise the ``link`` function.
 * ``k`` is the number of knots.
@@ -34,6 +34,8 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``restricted``:  if ``TRUE``, it restricts the model to have a time-constant correlation.
 * ``se`` is the ``len`` times 5 matrix of the standard errors of the GREG estimates.
 * ``sim_h`` is the number of simulations used in the indirect inference estimation.
+* ``states_noerr`` is a vector of indices for the state variables that do not have an error term in the transition equation.
+* ``VARgamma`` is the variance of the estimated parameter vector (phi) used in the cubic splines specification of the time-varying correlation.
 * ``y`` is the 6 times ``len`` matrix that contains the observed series.
 * ``W`` is the ``len`` times ``k`` matrix of cubic splines weights (it is the output of the ``Weights`` function).
 
