@@ -377,7 +377,7 @@ Rcpp::List KF_t_rcpp(const vec& par, const vec& y, const vec& se, vec& xttm1, ma
 }
 
 
-// Rao-Blackwellised bootstrap filter estimation of the state vector of the nonlinear model
+// Rao-Blackwellised bootstrap filter estimation of the correlation parameter in the nonlinear model
 // [[Rcpp::export]]
 Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat& y, const mat& se, const int& nstates, const bool& hyper_tan,
                                const mat& Rsel, const vec& states_noerr, const double& init_gamma){
