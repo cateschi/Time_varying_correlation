@@ -22,7 +22,7 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``d`` is the number of state variables for which a diffuse initialisation is used.
 * ``eps_sim`` is a matrix with ``nstates-length(states_noerr)+2`` rows and ``len`` times ``sim_h`` columns, and it contains the generated innovations used in the indirect inference estimation.
 * ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma).
-* ``hyper_tan``: if ``TRUE``, it uses the hyperbolic function to bound the correlation parameter, otherwise the ``link`` function.
+* ``hyper_tan``: if ``TRUE``, it uses the hyperbolic tangent to bound the correlation parameter, otherwise the ``link`` function.
 * ``k`` is the number of knots.
 * ``knots`` is the vector of the observations corresponding to the knots.
 * ``len`` is the sample size.
