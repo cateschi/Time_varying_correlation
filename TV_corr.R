@@ -535,12 +535,12 @@ IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofs
   } , error = function(e) e)
                 
   if(inherits(possibleError, "error")) {
-    opt.fun <- 1000000000
+    opt_fun <- 1000000000
   } else {
-    opt.fun <- t(c(beta_hat, VARgamma) - colMeans(betatilde))%*%(c(beta_hat, VARgamma) - colMeans(betatilde))
+    opt_fun <- t(c(beta_hat, VARgamma) - colMeans(betatilde))%*%(c(beta_hat, VARgamma) - colMeans(betatilde))
   }
 
-  return(opt.fun)
+  return(opt_fun)
 }
 
 
