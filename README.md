@@ -23,14 +23,14 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``eps_sim`` is a matrix with ``nstates-length(states_noerr)+2`` rows and ``len`` times ``sim_h`` columns, and it contains the generated innovations used in the indirect inference estimation.
 * ``gamma_draw`` is the vector containing the Rao-Blackwellised bootstrap filter estimates of the unbounded version of the correlation parameter (gamma).
 * ``hyper_tan``: if ``TRUE``, it uses the hyperbolic tangent to bound the correlation parameter, otherwise the ``link`` function.
-* ``k`` is the number of knots.
-* ``knots`` is the vector of the observations corresponding to the knots.
+* ``k`` is the number of cubic splines knots.
+* ``knots`` is the vector of the observations corresponding to the cubic splines knots.
 * ``len`` is the sample size.
 * ``nstates`` is the number of state variables in the model.
 * ``opti``: if ``TRUE``, it optimises the objective function.
-* ``outofsample``: if ``TRUE``, it computes the log-likelihood based on the out-of-sample forecast errors.
+* ``outofsample``: if ``TRUE``, it computes the log-likelihood based on the out-of-sample forecast errors, from the Kalman filter recursions.
 * ``par`` is the vector of the (inital) values for the static parameters.
-* ``parP10`` is a large number used for the diffuse initialisation.
+* ``parP10`` is a large number used for the diffuse initialisation of the Kalman filter.
 * ``restricted``:  if ``TRUE``, it restricts the model to have a time-constant correlation.
 * ``se`` is the ``len`` times 5 matrix of the standard errors of the GREG estimates.
 * ``sim_h`` is the number of simulations used in the indirect inference estimation.
