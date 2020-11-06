@@ -58,7 +58,7 @@ This C++ script contains a first set of functions that are needed in order to pe
 * ``stratifiedResampling_rcpp`` performs the startified resampling step of the Rao-Blackwellised bootstrap filter's algorithm.
 * ``KF_CC_splines_rcpp`` performs the Kalman filter estimation (and log-likelihood evaluation) of the cubic splines model.
 * ``ucminf_rcpp_splines`` maximises the the log-likelihood function evaluated in the ``KF_CC_splines_rcpp`` function.
-* ``KF_t_rcpp`` computes the prediction step of the Kalman filter.
+* ``KF_t_rcpp`` computes the prediction step of the Kalman filter, for only one point in time (i.e., it does not iterate the Kalman filter recursions over time).
 * ``boot_filter_CC_rcpp`` performs the Rao-blackwellised bootstrap filter estimation of the state vector of the nonlinear model.
 
 Most of the inputs/outputs of the functions included in the C++ script are the same as the ones listed above. We therefore here report only the addtional ones.
