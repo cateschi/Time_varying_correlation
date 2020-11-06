@@ -42,7 +42,7 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 ### Outputs
 Since also some outputs are common to many functions, below you find another list with all (alphabetically ordered) outputs:
 * ``logl`` is the value of the maximised log-likelihood.
-* ``opt.fun`` is the value of the minimised objective function used in the indirect inference estimation.
+* ``opt_fun`` is the value of the minimised objective function used in the indirect inference estimation.
 * ``Ptt`` is the list of the estimated (co)variance matrices of the Kalman filter estimates of the state variables.
 * ``Pttm1`` is the list of the predicted (co)variance matrices of the one-step-ahead predictions of the state variables, based on the Kalman filter recursions.
 * ``st_for`` is the matrix with the standardised forecast errors, based on the Kalman filter recursions.
