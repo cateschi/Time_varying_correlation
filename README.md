@@ -27,7 +27,7 @@ Some inputs are common to many functions. Below you can find the list (in alphab
 * ``knots`` is the vector of the observations corresponding to the knots.
 * ``len`` is the sample size.
 * ``nstates`` is the number of state variables in the model.
-* ``opti``: if ``TRUE``, it optimizes the function.
+* ``opti``: if ``TRUE``, it optimises the objective function.
 * ``outofsample``: if ``TRUE``, it computes the log-likelihood based on the out-of-sample forecast errors.
 * ``par`` is the vector of the (inital) values for the static parameters.
 * ``parP10`` is a large number used for the diffuse initialisation.
