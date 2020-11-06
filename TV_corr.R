@@ -454,7 +454,7 @@ IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofs
   
   possibleError <- tryCatch(for (h in 1:sim_h){
     
-    # generate time-varying corr according to a random walk model
+    # generate time-varying correlation according to a random walk model
     gammaII <- cumsum(exp(par[length(par)])*eps_sim[2,(h*len-len+1):(h*len)])
     if (hyper_tan == T){
       rhoII <- tanh(gammaII)
@@ -569,7 +569,7 @@ par_biv_const <- objopt_CC_const$par
 
 obj_const <- KF_CC_const(par_biv_const, y=y, se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, hyper_tan=hyper_tan)
                 
-# estimated time-constant correlation
+# Estimated time-constant correlation
 gamma_hat_const <- par_biv_const[11]
 if (hyper_tan==T){
   rho_hat_const <- tanh(gamma_hat_const)
@@ -617,7 +617,7 @@ par_biv_splines <- objopt_CC_splines$par
 obj_splines <- KF_CC_splines(objopt_CC_splines$par, y=y, se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43,
                              k=length(knots), restricted=F, W=W, d=30-13, hyper_tan=hyper_tan)
 
-# estimated time-varying correlation
+# Estimated time-varying correlation
 gamma_hat_splines <- W[,1:length(knots)]%*%par_biv_splines[(length(par_biv_splines)-length(knots)+1):length(par_biv_splines)]
 if (hyper_tan==T){
   rho_hat_splines <- tanh(gamma_hat_splines)
@@ -638,7 +638,7 @@ sim_h <- 5
 set.seed(2609)
 eps_sim <- t(mvrnorm(n = len*sim_h, rep(0,43-length(states_noerr)+2), diag(1,43-length(states_noerr)+2)))  
 
-# find initial value for the variance of gamma
+# Find initial value for the variance of gamma
 grid_sigma_gamma <- seq(0.01, 0.15, 0.01)
 obj_grid <- rep(NA, length(grid_sigma_gamma))
 
@@ -665,7 +665,7 @@ results_BF <- boot_filter_CC_rcpp(draw_m, IndInf_result$par, y, as.matrix(se), n
 KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12], y=y[,-len], se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, d=30-13,
                              gamma_draw = results_BF$att_BF[2:len], hyper_tan = hyper_tan)
                 
-# estimated time-varying correlation
+# Estimated time-varying correlation
 if (hyper_tan == T){
   rho_hat_BF = tanh(results_BF$att_BF)
 } else {
