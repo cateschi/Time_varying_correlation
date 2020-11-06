@@ -95,7 +95,7 @@ Rcpp::List replist(const Rcpp::List& X, const vec& ind) {
 }
 
 
-// Column means of matrix
+// Column means of a matrix
 vec colMeans(const mat& A){
   int l = A.n_cols;
   vec b = zeros(l);
@@ -242,11 +242,11 @@ double KF_CC_splines_rcpp(const vec& par, const mat& y, const mat& se, const boo
 // [[Rcpp::export]]
 Rcpp::List ucminf_rcpp_splines(const vec& init_val, const mat& y, const mat& se, const bool& opti, const bool& outofsample, const double& parP10, 
                                const int& nstates, int& d, const int& k, const mat& W, const bool& restricted, const bool& hyper_tan, Rcpp::List& control){ 
-  // Extract R's optim function
+  // Extract R's ucminf function
   Rcpp::Environment stats("package:ucminf"); 
   Rcpp::Function ucminf = stats["ucminf"];
   
-  // Call the optim function from R in C++ 
+  // Call the ucminf function from R in C++ 
   Rcpp::List opt_results = ucminf(Rcpp::_["par"]    = init_val,
                                   // Make sure this function is not exported!
                                   Rcpp::_["fn"]     = Rcpp::InternalFunction(&KF_CC_splines_rcpp),
@@ -267,7 +267,7 @@ Rcpp::List ucminf_rcpp_splines(const vec& init_val, const mat& y, const mat& se,
   vec est_par = Rcpp::as<arma::vec>(opt_results[0]);      // estimated parameters
   double value = opt_results[1];      // value of the log-likelihood at the estimates
   
-  // Return estimated values
+  // Return estimated parameters and log-likelihood value
   Rcpp::List ret;
   ret["par"] = est_par;
   ret["value"] = value;
@@ -377,7 +377,7 @@ Rcpp::List KF_t_rcpp(const vec& par, const vec& y, const vec& se, vec& xttm1, ma
 }
 
 
-// Rao-blackwellised bootstrap filter estimation of the state vector of the nonlinear model
+// Rao-Blackwellised bootstrap filter estimation of the state vector of the nonlinear model
 // [[Rcpp::export]]
 Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat& y, const mat& se, const int& nstates, const bool& hyper_tan,
                                const mat& Rsel, const vec& states_noerr, const double& init_gamma){
@@ -422,7 +422,7 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
   mat Dchol = chol(D);
   mat M;
 
-  //initialisation
+  // Initialisation
   for (int m = 0; m < draw_m; m++){
     gamma_t = as_scalar(exp(tau_hat(tau_hat.size()-1))*randn(1) + init_gamma);      // initialise gamma_t
 
@@ -442,7 +442,7 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
     Pttm1_KF[m] = Rsel*Q*Rsel.t();
   }
 
-  //loop over time
+  // Loop over time
   for (int i = 0; i < len; i++){
     for (int m = 0; m < draw_m; m++){
 
@@ -452,7 +452,7 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
 
       KF_results = KF_t_rcpp(tau_hat.subvec(0,tau_hat.size()-2),vectorise(y.col(i)),vectorise(se.row(i)),alpha_tm,Pttm1_tm,hyper_tan,gamma_tm,nstates);
 
-      //compute weights
+      // Compute weights
       p_den_m = KF_results["value"];
       p_density(m) = exp(-p_den_m);
       if (p_density(m) == 0){
@@ -461,13 +461,13 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
       w_tilde(m) = w_t(m)*p_density(m);
     }
 
-    //normalised weights
+    // Normalised weights
     w_t = w_tilde/sum(w_tilde);
 
     ESS(i) = as_scalar(1/(sum(pow(w_t,2))));
     CV(i) = sqrt(mean(pow(draw_m*w_t-1,2)));
 
-    //resample
+    // Resample
     w_t_power = pow(w_t,(log(sqrt(draw_m-1)/CV(i))));
     resample_set = stratifiedResampling_rcpp(w_t_power, draw_m);
     alpha_t = repcol(alpha_t,resample_set);
@@ -475,7 +475,7 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
 
     w_t = ones(draw_m)/draw_m;
 
-    //estimate state variable and variance
+    // Estimate state variable and variance
     for (int m = 0; m < draw_m; m++){
       att_BF(i) = att_BF(i) + w_t(m)*as_scalar(alpha_t.submat(alpha_t.n_rows-1,m,alpha_t.n_rows-1,m));
       Ptt_BF(i) = Ptt_BF(i) + w_t(m)*pow(as_scalar(alpha_t.submat(alpha_t.n_rows-1,m,alpha_t.n_rows-1,m)),2);
@@ -483,7 +483,7 @@ Rcpp::List boot_filter_CC_rcpp(const int& draw_m, const vec& tau_hat, const mat&
     Ptt_BF(i) = Ptt_BF(i) - pow(att_BF(i),2);
 
     if (i < len-1){
-      //regenerate data
+      // Regenerate data
       for (int m = 0; m < draw_m; m++){
         gamma_t = as_scalar(alpha_t.submat(alpha_t.n_rows-1,m,alpha_t.n_rows-1,m)) + as_scalar(exp(tau_hat(tau_hat.size()-1))*randn(1));
 
