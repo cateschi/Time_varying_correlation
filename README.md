@@ -55,7 +55,7 @@ Since also some outputs are common to many functions, below you find another lis
 
 ### Functions
 This C++ script contains a first set of functions that are needed in order to perform some mathematical operations. The functions that are instead related to the estimation of the time-varying correlation are:
-* ``stratifiedResampling_rcpp`` performs startified resampling.
+* ``stratifiedResampling_rcpp`` performs the startified resampling step of the Rao-Blackwellised bootstrap filter's algorithm.
 * ``KF_CC_splines_rcpp`` performs the Kalman filter estimation (and log-likelihood evaluation) of the cubic splines model.
 * ``ucminf_rcpp_splines`` maximises the the log-likelihood function evaluated in the ``KF_CC_splines_rcpp`` function.
 * ``KF_t_rcpp`` computes the prediction step of the Kalman filter.
