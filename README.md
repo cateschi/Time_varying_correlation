@@ -68,7 +68,7 @@ Most of the inputs/outputs of the functions included in the C++ script are the s
 * ``init_gamma`` is the value that is used to initialise the Rao-Blackwellised bootstrap filter of gamma (the unbounded version of the correlation parameter).
 * ``init_val`` is the vector of the inital values for the static parameters.
 * ``Rsel`` is selection matrix of the innovations in the transition equation.
-* ``tau_hat`` is the vector with the indirect inference estimates of the static parameters of the nonlinear model.
+* ``tau_hat`` is the vector with the indirect inference estimates of the static parameters of the nonlinear model, except for the estimate of the variance of the innovation in the transition equation for the unbounded version of the correlation parameter (gamma).
 * ``w`` is a vector of unstandardised weights calculated for the resampling step of the Rao-Blackwellised bootstrap filter's algorithm.
 
 Notice that in the ``KF_t_rcpp`` function, the inputs ``se``, ``xttm1`` and ``y`` are vectors instead of matrices, and ``Pttm1`` is a matrix instead of a list.
