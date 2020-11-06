@@ -659,9 +659,11 @@ IndInf_result <- optimr(par=c(par_biv_splines[-c((length(par_biv_splines)-length
 
 draw_m <- 5000
 set.seed(1006)
-                
+      
+# Estimate the correlation parameter with the Rao-Blackwellised bootstrap filter
 results_BF <- boot_filter_CC_rcpp(draw_m, IndInf_result$par, y, as.matrix(se), nstates=43, hyper_tan, Rsel, states_noerr, init_gamma = par_biv_const[11])
 
+# Estimate the remaining state variables with the Kalman filter
 KF_final <- KF_CC_known_corr(par=IndInf_result$par[1:12], y=y[,-len], se=se, opti=F, outofsample=T, parP10=1000000000000, nstates=43, d=30-13,
                              gamma_draw = results_BF$att_BF[2:len], hyper_tan = hyper_tan)
                 
