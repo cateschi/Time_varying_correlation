@@ -53,6 +53,7 @@ Since also some outputs are common to many functions, below you find another lis
 
 ## C++ script *TV_corr.cpp*
 
+### Functions
 This C++ script contains a first set of functions that are needed in order to perform some mathematical operations. The functions that are instead related to the estimation of the time-varying correlation are:
 * ``stratifiedResampling_rcpp`` performs startified resampling.
 * ``KF_CC_splines_rcpp`` performs the Kalman filter estimation (and log-likelihood evaluation) of the cubic splines model.
