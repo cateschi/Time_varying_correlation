@@ -547,7 +547,7 @@ IndInf_CC <- function(par, sim_h, beta_hat, len, eps_sim, VARgamma, opti, outofs
                 
 ## Upload cpp script ##
 
-Cpp_IndInf_ssm_levels <- sourceCpp("estimation_CC_IndInf_BF.cpp")
+TV_corr_cpp <- sourceCpp("TV_corr.cpp")
 
                 
                 
